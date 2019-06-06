@@ -54,4 +54,10 @@
   # $ sysctl -n hw.ncpu
   nix.maxJobs = 8;
   nix.buildCores = 0;
+
+  nix.nixPath = [
+    "nixpkgs=$HOME/.nix-defexpr/channels/nixpkgs" # NixOS/nix#1865
+  ];
+
+  nixpkgs.config = import ./config.nix;
 }
