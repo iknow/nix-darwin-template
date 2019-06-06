@@ -1,4 +1,4 @@
-self: {
+self: super: {
   lorri = let
     src = builtins.fetchGit {
       url = "https://github.com/target/lorri";
