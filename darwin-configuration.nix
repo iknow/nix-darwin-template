@@ -6,9 +6,10 @@
     (import ./overlays/packages.nix)
   ];
 
-  # Configure custom Darwin modules (service configuration)
-  # Environment variable EIKAIWA_BASEDIR must be externally defined
+  # Configure custom Darwin modules (service configuration).
+  # Environment variable EIKAIWA_BASEDIR must be externally defined.
   imports = [
+    <iknow/darwin-modules>
     ((builtins.getEnv "EIKAIWA_BASEDIR") + "/eikaiwa_content/nix/darwin-config.nix")
     ./darwin-modules/direnv.nix
   ];
@@ -23,6 +24,7 @@
       gitFull
       jq
       lorri
+      phraseapp_updater
     ];
 
   # Enable Eikaiwa services (postgres, elasticsearch, kibana memcached, redis)
