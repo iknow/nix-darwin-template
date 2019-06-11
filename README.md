@@ -1,7 +1,7 @@
 # Nix Darwin Basic Configuration
 
 ### Prerequisites
-* Install [Nix][nix]
+* Install [Nix][nix] in multi-user mode
 * Install [nix-darwin][]
 * Add iKnow's Nix channel: `nix-channel --add https://github.com/iknow/nix-channel/archive/master.tar.gz iknow`
 * set `EIKAIWA_BASEDIR` environment variable to the directory where `eikaiwa_content` and `eikaiwa_content_frontend` are checked out
@@ -11,4 +11,5 @@
 
 ### Installation
 
-Extract this repository into `~/.config/nixpkgs`, and run `darwin-rebuild switch -I darwin-config=$HOME/.config/nixpkgs/darwin-configuration.nix` to activate.
+* Clone this template repository and check it out into `~/.config/nixpkgs`.
+* Run `darwin-rebuild switch -I darwin-config=$HOME/.config/nixpkgs/darwin-configuration.nix` to activate the configuration.
