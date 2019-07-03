@@ -35,12 +35,7 @@
     postgresql.fastUnsafe = true;
   };
 
-  services.lorri = {
-    paths = [
-      ((builtins.getEnv "EIKAIWA_BASEDIR") + "/eikaiwa_content")
-      ((builtins.getEnv "EIKAIWA_BASEDIR") + "/eikaiwa_content_frontend")
-    ];
-  };
+  services.lorri.enable = true;
 
   # Use a custom configuration.nix location. Switch to new location by running once
   # $ darwin-rebuild switch -I darwin-config=$HOME/.config/nixpkgs/darwin-configuration.nix
