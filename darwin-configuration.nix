@@ -20,11 +20,25 @@
     with pkgs; [
       ag
       bundix
+      colordiff
       coreutils-prefixed
+      fzf
+      gitAndTools.diff-so-fancy
       gitFull
+      gron
+      httpie
       jq
-      lorri
+      ncdu
+      nix-bash-completions
+      overmind
       phraseapp_updater
+      pv
+      rename
+      rsync
+      socat
+      tig
+      tree
+      wdiff
     ];
 
   # Enable Eikaiwa services (postgres, elasticsearch, kibana memcached, redis)
@@ -35,6 +49,7 @@
     postgresql.fastUnsafe = true;
   };
 
+  # Run a lorri daemon
   services.lorri.enable = true;
 
   # Use a custom configuration.nix location. Switch to new location by running once
