@@ -20,10 +20,25 @@
     with pkgs; [
       ag
       bundix
+      colordiff
       coreutils-prefixed
+      fzf
+      gitAndTools.diff-so-fancy
       gitFull
+      gron
+      httpie
       jq
+      ncdu
+      nix-bash-completions
+      overmind
       phraseapp_updater
+      pv
+      rename
+      rsync
+      socat
+      tig
+      tree
+      wdiff
     ];
 
   # Enable Eikaiwa services (postgres, elasticsearch, kibana memcached, redis)
