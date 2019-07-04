@@ -23,7 +23,6 @@
       coreutils-prefixed
       gitFull
       jq
-      lorri
       phraseapp_updater
     ];
 
@@ -35,6 +34,7 @@
     postgresql.fastUnsafe = true;
   };
 
+  # Run a lorri daemon
   services.lorri.enable = true;
 
   # Use a custom configuration.nix location. Switch to new location by running once
