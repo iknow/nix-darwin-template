@@ -3,16 +3,6 @@
 set -e
 set -u
 
-if ! [ -d "${EIKAIWA_BASEDIR:-}" ]; then
-    echo "EIKAIWA_BASEDIR not set to a existing directory" >&2
-    exit 1
-fi
-
-if ! [ -d "$EIKAIWA_BASEDIR/eikaiwa_content" ]; then
-    echo "eikaiwa_content not checked out in EIKAIWA_BASEDIR" >&2
-    exit 1
-fi
-
 if ! [ "$SHELL" = "/bin/zsh" ]; then
     echo "Run this script under Apple's default /bin/zsh shell"
     exit 1
@@ -49,7 +39,7 @@ if [ "${darwin_version%%.*}" -ge 19 ]; then
 fi
 
 mkdir -p ~/.config/nixpkgs
-curl -L https://github.com/iknow/nix-darwin-template/archive/master.zip | tar --strip-components 1 -C ~/.config/nixpkgs -x
+curl -L https://github.com/iknow/nix-darwin-template/archive/design.zip | tar --strip-components 1 -C ~/.config/nixpkgs -x
 
 
 # Install Nix

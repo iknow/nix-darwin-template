@@ -10,7 +10,6 @@
   # Environment variable EIKAIWA_BASEDIR must be externally defined.
   imports = [
     <iknow/darwin-modules>
-    ((builtins.getEnv "EIKAIWA_BASEDIR") + "/eikaiwa_content/nix/darwin-config.nix")
     ./darwin-modules/direnv.nix
   ];
 
@@ -41,14 +40,6 @@
       tree
       wdiff
     ];
-
-  # Enable Eikaiwa services (postgres, elasticsearch, kibana memcached, redis)
-  eikaiwa.services = {
-    enable = true;
-    # Configure PostgreSQL to run faster but with less safety in
-    # the event of a crash. Disable if storing useful data.
-    postgresql.fastUnsafe = true;
-  };
 
   # Run a lorri daemon
   services.lorri.enable = true;
