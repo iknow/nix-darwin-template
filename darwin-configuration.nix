@@ -25,6 +25,7 @@
       fzf
       gitAndTools.diff-so-fancy
       gitFull
+      git-lfs
       gron
       httpie
       jq
