@@ -33,7 +33,7 @@ if [ "${darwin_version%%.*}" -ge 19 ]; then
     fi
 
     # If 10.15 and nothing mounted on /nix
-    if ! mount | grep -q 'on /nix'; then
+    if ! LANG=en_US /sbin/mount | grep -q 'on /nix'; then
         PASSPHRASE=$(openssl rand -base64 32)
         echo "Creating and mounting /nix volume encrypted with passphrase: $PASSPHRASE"
         sudo diskutil apfs addVolume disk1 'Case-sensitive APFS' Nix -mountpoint /nix -passphrase "$PASSPHRASE"
