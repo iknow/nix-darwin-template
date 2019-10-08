@@ -27,7 +27,7 @@ sudo echo "Obtained!"
 darwin_version="$(uname -r)"
 if [ "${darwin_version%%.*}" -ge 19 ]; then
     if ! [ -d "/nix" ]; then
-        (echo 'nix'; echo 'run	private/var/run') | sudo tee -a /etc/synthetic.conf >/dev/null
+        (echo 'nix'; echo -e 'run\tprivate/var/run') | sudo tee -a /etc/synthetic.conf >/dev/null
         echo "Added /nix and /run to synthetic.conf. You must now reboot and re-run this script."
         exit 0
     fi
