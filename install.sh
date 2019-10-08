@@ -34,9 +34,16 @@ if [ "${darwin_version%%.*}" -ge 19 ]; then
 
     # If 10.15 and nothing mounted on /nix
     if ! mount | grep -q 'on /nix'; then
-        echo "Creating and mounting /nix filesystem"
-        sudo diskutil apfs addVolume disk1 'Case-sensitive APFS' Nix -mountpoint /nix
+        PASSPHRASE=$(openssl rand -base64 32)
+        echo "Creating and mounting /nix volume encrypted with passphrase: $PASSPHRASE"
+        sudo diskutil apfs addVolume disk1 'Case-sensitive APFS' Nix -mountpoint /nix -passphrase "$PASSPHRASE"
+
+        UUID=$(diskutil info -plist /nix | plutil -extract VolumeUUID xml1 - -o - | plutil -p - | sed -e 's/"//g')
+        security add-generic-password -l nix -a "$UUID" -s "$UUID" -D "Encrypted Volume Password" -w "$PASSPHRASE" \
+                 -T "/System/Library/CoreServices/APFSUserAgent" -T "/System/Library/CoreServices/CSUserAgent"
+
         sudo diskutil enableOwnership /nix
+
         echo 'LABEL=Nix /nix apfs rw' | sudo tee -a /etc/fstab >/dev/null
     fi
 fi
