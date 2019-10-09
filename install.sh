@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/zsh
 
 set -e
 set -u
@@ -13,13 +13,44 @@ if ! [ -d "$EIKAIWA_BASEDIR/eikaiwa_content" ]; then
     exit 1
 fi
 
-mkdir -p ~/.config/nixpkgs
-curl -L https://github.com/iknow/nix-darwin-template/archive/master.zip | tar --strip-components 1 -C ~/.config/nixpkgs -x
+if ! [ "$SHELL" = "/bin/zsh" ]; then
+    echo "Run this script under Apple's default /bin/zsh shell"
+    exit 1
+fi
 
 # Authenticate to sudo: nix installers are going to need it, but we're detaching
 # them from the terminal
 echo "Obtaining sudo:"
 sudo echo "Obtained!"
+
+# If MacOS 10.15
+darwin_version="$(uname -r)"
+if [ "${darwin_version%%.*}" -ge 19 ]; then
+    if ! [ -d "/nix" ]; then
+        (echo 'nix'; echo -e 'run\tprivate/var/run') | sudo tee -a /etc/synthetic.conf >/dev/null
+        echo "Added /nix and /run to synthetic.conf. You must now reboot and re-run this script."
+        exit 0
+    fi
+
+    # If 10.15 and nothing mounted on /nix
+    if ! LANG=en_US /sbin/mount | grep -q 'on /nix'; then
+        PASSPHRASE=$(openssl rand -base64 32)
+        echo "Creating and mounting /nix volume encrypted with passphrase: $PASSPHRASE"
+        sudo diskutil apfs addVolume disk1 'Case-sensitive APFS' Nix -mountpoint /nix -passphrase "$PASSPHRASE"
+
+        UUID=$(diskutil info -plist /nix | plutil -extract VolumeUUID xml1 - -o - | plutil -p - | sed -e 's/"//g')
+        security add-generic-password -l Nix -a "$UUID" -s "$UUID" -D "Encrypted Volume Password" -w "$PASSPHRASE" \
+                 -T "/System/Library/CoreServices/APFSUserAgent" -T "/System/Library/CoreServices/CSUserAgent"
+
+        sudo diskutil enableOwnership /nix
+
+        echo 'LABEL=Nix /nix apfs rw' | sudo tee -a /etc/fstab >/dev/null
+    fi
+fi
+
+mkdir -p ~/.config/nixpkgs
+curl -L https://github.com/iknow/nix-darwin-template/archive/master.zip | tar --strip-components 1 -C ~/.config/nixpkgs -x
+
 
 # Install Nix
 yes | sh <(curl https://nixos.org/nix/install) --daemon
@@ -43,9 +74,12 @@ git commit -m 'Initial commit' --author 'Initialization <systems@iknow.jp>'
 popd
 
 # nix-darwin expects to be able to replace several shell startup files: move them out of the way
-for i in /etc/nix/nix.conf /etc/zshrc /etc/zprofile; do
+for i in /etc/nix/nix.conf /etc/zprofile /etc/zshrc; do
     sudo mv $i $i.backup-before-nix-darwin
 done
+
+# Apple have reasonably sensible zshrc defaults: poke them into nix-darwin's chained init file.
+sudo cp /etc/zshrc.backup-before-nix /etc/zshrc.local
 
 # bashrc is a bit special because we have to care about Apple's defaults
 sudo cp /etc/bashrc.backup-before-nix /etc/bashrc
@@ -59,8 +93,15 @@ yes | nix run -f https://github.com/LnL7/nix-darwin/archive/master.tar.gz instal
 
 # Import nix-darwin config
 set +u
-. /etc/bashrc
+. /etc/zshenv
 set -u
+
+echo 'Waiting for nix-daemon..'
+while ! nix ping-store; do
+    echo -n '.'
+    sleep 1
+done
+echo
 
 # Enforce opinions: developer macs are effectively single user systems,
 # nix-darwin should only have user channels.

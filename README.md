@@ -3,7 +3,7 @@
 ### Easy Installation
 
 * Set `EIKAIWA_BASEDIR` environment variable to the directory where `eikaiwa_content` and `eikaiwa_content_frontend` are checked out.
-* Run `bash <(curl https://raw.githubusercontent.com/iknow/nix-darwin-template/master/install.sh)`
+* Run `zsh <(curl https://raw.githubusercontent.com/iknow/nix-darwin-template/master/install.sh)`
 
 ### Manual Installation
 
