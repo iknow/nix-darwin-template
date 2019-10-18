@@ -43,6 +43,7 @@ if [ "${darwin_version%%.*}" -ge 19 ]; then
                  -T "/System/Library/CoreServices/APFSUserAgent" -T "/System/Library/CoreServices/CSUserAgent"
 
         sudo diskutil enableOwnership /nix
+        sudo mdutil -i off /nix
 
         echo 'LABEL=Nix /nix apfs rw' | sudo tee -a /etc/fstab >/dev/null
     fi
