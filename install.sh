@@ -50,11 +50,11 @@ if [ "${darwin_version%%.*}" -ge 19 ]; then
 fi
 
 mkdir -p ~/.config/nixpkgs
-curl -L https://github.com/iknow/nix-darwin-template/archive/master.zip | tar --strip-components 1 -C ~/.config/nixpkgs -x
+curl -fsSL https://github.com/iknow/nix-darwin-template/archive/master.zip | tar --strip-components 1 -C ~/.config/nixpkgs -x
 
 
 # Install Nix
-yes | sh <(curl https://nixos.org/nix/install) --daemon
+yes | sh <(curl -fsSL https://nixos.org/nix/install) --daemon
 
 # and pull it into the current shell
 . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
