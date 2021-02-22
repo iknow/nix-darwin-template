@@ -23,32 +23,6 @@ fi
 echo "Obtaining sudo:"
 sudo echo "Obtained!"
 
-# If MacOS 10.15
-darwin_version="$(uname -r)"
-if [ "${darwin_version%%.*}" -ge 19 ]; then
-    if ! [ -d "/nix" ]; then
-        (echo 'nix'; echo -e 'run\tprivate/var/run') | sudo tee -a /etc/synthetic.conf >/dev/null
-        echo "Added /nix and /run to synthetic.conf. You must now reboot and re-run this script."
-        exit 0
-    fi
-
-    # If 10.15 and nothing mounted on /nix
-    if ! LANG=en_US /sbin/mount | grep -q 'on /nix'; then
-        PASSPHRASE=$(openssl rand -base64 32)
-        echo "Creating and mounting /nix volume encrypted with passphrase: $PASSPHRASE"
-        sudo diskutil apfs addVolume disk1 'Case-sensitive APFS' Nix -mountpoint /nix -passphrase "$PASSPHRASE"
-
-        UUID=$(diskutil info -plist /nix | plutil -extract VolumeUUID xml1 - -o - | plutil -p - | sed -e 's/"//g')
-        security add-generic-password -l Nix -a "$UUID" -s "$UUID" -D "Encrypted Volume Password" -w "$PASSPHRASE" \
-                 -T "/System/Library/CoreServices/APFSUserAgent" -T "/System/Library/CoreServices/CSUserAgent"
-
-        sudo diskutil enableOwnership /nix
-        sudo mdutil -i off /nix
-
-        echo 'LABEL=Nix /nix apfs rw' | sudo tee -a /etc/fstab >/dev/null
-    fi
-fi
-
 mkdir -p ~/.config/nixpkgs
 curl -fsSL https://github.com/iknow/nix-darwin-template/archive/master.zip | tar --strip-components 1 -C ~/.config/nixpkgs -x
 
