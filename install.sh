@@ -23,9 +23,16 @@ fi
 echo "Obtaining sudo:"
 sudo echo "Obtained!"
 
-# If MacOS 10.15
+test_t2_chip_present(){
+    # from create-darwin-volume.sh, returns 0 if the system has a t2 chip
+    sudo xartutil --list >/dev/null 2>/dev/null
+}
+
+# If we have MacOS 10.15 or newer and no T2 chip, we need to manually create the
+# nix volume, encrypted. If we have a T2 chip, we rely on the T2's encryption at
+# rest.
 darwin_version="$(uname -r)"
-if [ "${darwin_version%%.*}" -ge 19 ]; then
+if (! test_t2_chip_present) && [ "${darwin_version%%.*}" -ge 19 ]; then
     if ! [ -d "/nix" ]; then
         (echo 'nix'; echo -e 'run\tprivate/var/run') | sudo tee -a /etc/synthetic.conf >/dev/null
         echo "Added /nix and /run to synthetic.conf. You must now reboot and re-run this script."
