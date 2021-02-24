@@ -74,13 +74,10 @@ git add -A
 git commit -m 'Initial commit' --author 'Initialization <systems@iknow.jp>'
 popd
 
-# nix-darwin expects to be able to replace several shell startup files: move them out of the way
-for i in /etc/nix/nix.conf /etc/zprofile /etc/zshrc; do
+# nix-darwin expects to be able to replace configuration files: move them out of the way
+for i in /etc/nix/nix.conf; do
     sudo mv $i $i.backup-before-nix-darwin
 done
-
-# Apple have reasonably sensible zshrc defaults: poke them into nix-darwin's chained init file.
-sudo cp /etc/zshrc.backup-before-nix /etc/zshrc.local
 
 # bashrc is a bit special because we have to care about Apple's defaults
 sudo cp /etc/bashrc.backup-before-nix /etc/bashrc
