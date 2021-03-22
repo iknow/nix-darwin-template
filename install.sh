@@ -59,9 +59,13 @@ fi
 mkdir -p ~/.config/nixpkgs
 curl -fsSL https://github.com/iknow/nix-darwin-template/archive/master.zip | tar --strip-components 1 -C ~/.config/nixpkgs -x
 
+local -a nix_install_options=("--daemon")
+if test_t2_chip_present; then
+   nix_install_options+=("--darwin-use-unencrypted-nix-store-volume")
+fi
 
 # Install Nix
-yes | sh <(curl -fsSL https://nixos.org/nix/install) --daemon
+yes | sh <(curl -fsSL https://nixos.org/nix/install) "${nix_install_options[@]}"
 
 # and pull it into the current shell
 . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
