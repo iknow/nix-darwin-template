@@ -79,5 +79,10 @@
     "nixpkgs=$HOME/.nix-defexpr/channels/nixpkgs" # NixOS/nix#1865
   ];
 
+  nix.gc = {
+    automatic = true;
+    options = "--delete-older-than 30d";
+  };
+
   nixpkgs.config = import ./config.nix;
 }
