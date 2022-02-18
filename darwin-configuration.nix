@@ -29,6 +29,7 @@
       gron
       httpie
       jq
+      lorri
       ncdu
       nix-bash-completions
       overmind
