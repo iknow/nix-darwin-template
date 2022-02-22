@@ -95,10 +95,12 @@ sudo cp /etc/bashrc.backup-before-nix /etc/bashrc
 sudo sh -c "echo 'if test -e /etc/static/bashrc; then . /etc/static/bashrc; fi' >> /etc/bashrc"
 
 # install nix-darwin
-export NIX_PATH="$NIX_PATH:darwin-config=$HOME/.config/nixpkgs/darwin-configuration.nix"
+nixpkgs="$(nix-instantiate --find-file nixpkgs)"
+export NIX_PATH="nixpkgs=$nixpkgs:darwin-config=$HOME/.config/nixpkgs/darwin-configuration.nix"
 export NIX_BUILD_CORES=0
 export NIX_MAX_JOBS=8
-yes | nix run -f https://github.com/LnL7/nix-darwin/archive/master.tar.gz installer -c darwin-installer
+yes | nix --extra-experimental-features 'nix-command' \
+    shell -f https://github.com/LnL7/nix-darwin/archive/master.tar.gz installer -c darwin-installer
 
 # Import nix-darwin config
 set +u
@@ -106,7 +108,7 @@ set +u
 set -u
 
 echo 'Waiting for nix-daemon..'
-while ! nix ping-store; do
+while ! nix --extra-experimental-features 'nix-command' store ping; do
     echo -n '.'
     sleep 1
 done
