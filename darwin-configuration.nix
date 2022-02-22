@@ -27,7 +27,7 @@
       gitFull
       git-lfs
       gron
-      httpie
+      # httpie
       jq
       lorri
       ncdu
