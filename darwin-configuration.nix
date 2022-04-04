@@ -18,7 +18,6 @@
   # $ nix-env -qaP | grep <packagename>
   environment.systemPackages =
     with pkgs; [
-      ag
       bundix
       colordiff
       coreutils-prefixed
@@ -37,6 +36,7 @@
       pv
       rename
       rsync
+      silver-searcher
       socat
       tig
       tree
